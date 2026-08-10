@@ -17,14 +17,19 @@ jobs:
         java-version: '17'
         distribution: 'zulu'
 
-    # Мы полностью отказываемся от возни с gradle-wrapper. 
-    # Скачиваем совместимую версию Gradle (8.0.2) напрямую, без всяких обёрток.
-    - name: Download Gradle 8.0.2
-      run: wget https://services.gradle.org/distributions/gradle-8.0.2-bin.zip && unzip gradle-8.0.2-bin.zip
+    # ОФИЦИАЛЬНЫЙ МЕТОД: Gradle скачается сам в нужной версии (8.0.2)
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v3
+      with:
+        gradle-version: '8.0.2'
 
-    # Запускаем сборку через скачанный Gradle (папка gradle-8.0.2/bin/)
+    # ЧИСТИМ КЭШ от всех предыдущих ошибок
+    - name: Clean Gradle Cache
+      run: ./gradlew clean
+
+    # СБОРКА
     - name: Build APK
-      run: ./gradle-8.0.2/bin/gradle assembleDebug
+      run: ./gradlew assembleDebug
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
