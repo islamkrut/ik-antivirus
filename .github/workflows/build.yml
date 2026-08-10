@@ -17,21 +17,13 @@ jobs:
         java-version: '17'
         distribution: 'zulu'
         
-    - name: Create gradle wrapper folder
-      run: mkdir -p gradle/wrapper
+    - name: Setup Gradle (Wrapper & Cache)
+      uses: gradle/actions/setup-gradle@v3
       
-    - name: Download gradle-wrapper.jar via curl
-      run: curl -L -o gradle/wrapper/gradle-wrapper.jar https://repo1.maven.org/maven2/org/gradle/wrapper/gradle-wrapper/8.10.2/gradle-wrapper-8.10.2.jar
+    # Этот шаг сам создаст правильный gradle-wrapper.jar прямо на сервере GitHub.
+    - name: Regenerate Gradle Wrapper (Local)
+      run: gradle wrapper --gradle-version 8.10.2
       
-    - name: Create gradle-wrapper.properties
-      run: echo -e "distributionBase=GRADLE_USER_HOME\ndistributionPath=wrapper/dists\ndistributionUrl=https\\://services.gradle.org/distributions/gradle-8.10.2-bin.zip\nnetworkTimeout=10000\nzipStoreBase=GRADLE_USER_HOME\nzipStorePath=wrapper/dists" > gradle/wrapper/gradle-wrapper.properties
-      
-    - name: Create gradlew script
-      run: |
-        echo '#!/bin/sh' > gradlew
-        echo 'exec java -jar gradle/wrapper/gradle-wrapper.jar "$@"' >> gradlew
-        chmod +x gradlew
-        
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
       
