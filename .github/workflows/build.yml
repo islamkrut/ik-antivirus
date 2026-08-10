@@ -10,26 +10,22 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-      
+
     - name: Set up JDK 17
       uses: actions/setup-java@v4
       with:
         java-version: '17'
         distribution: 'zulu'
-        
-    - name: Setup Gradle (Wrapper & Cache)
-      uses: gradle/actions/setup-gradle@v3
-      
-    # Этот шаг сам создаст правильный gradle-wrapper.jar прямо на сервере GitHub.
-    - name: Regenerate Gradle Wrapper (Local)
-      run: gradle wrapper --gradle-version 8.10.2
-      
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-      
+
+    # Мы полностью отказываемся от возни с gradle-wrapper. 
+    # Скачиваем совместимую версию Gradle (8.0.2) напрямую, без всяких обёрток.
+    - name: Download Gradle 8.0.2
+      run: wget https://services.gradle.org/distributions/gradle-8.0.2-bin.zip && unzip gradle-8.0.2-bin.zip
+
+    # Запускаем сборку через скачанный Gradle (папка gradle-8.0.2/bin/)
     - name: Build APK
-      run: ./gradlew assembleDebug
-      
+      run: ./gradle-8.0.2/bin/gradle assembleDebug
+
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
