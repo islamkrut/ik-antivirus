@@ -8,27 +8,26 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+    # 1. Скачиваем твой код
     - name: Checkout code
       uses: actions/checkout@v4
 
+    # 2. Ставим Java
     - name: Set up JDK 17
       uses: actions/setup-java@v4
       with:
         java-version: '17'
         distribution: 'zulu'
 
-    - name: Hard Reset Gradle Cache
-      run: rm -rf ~/.gradle/caches/
+    # 3. Качаем Gradle 8.0.2 напрямую (без обёрток и без 9.3.0)
+    - name: Download Gradle 8.0.2
+      run: wget https://services.gradle.org/distributions/gradle-8.0.2-bin.zip && unzip -q gradle-8.0.2-bin.zip
 
-    - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v3
-      with:
-        gradle-version: '8.0.2'
-        cache-disabled: true   # <-- Запрещаем GitHub использовать твой битый кэш
-
+    # 4. Собираем APK через скачанную папку gradle-8.0.2
     - name: Build APK
-      run: gradle assembleDebug
+      run: ./gradle-8.0.2/bin/gradle assembleDebug
 
+    # 5. Выдаём тебе готовый файл
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
