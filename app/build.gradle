@@ -29,3 +29,14 @@ android {
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
 }
+
+// ВАЖНО: ПОДКЛЮЧАЕМ БЫСТРЫЕ ЗЕРКАЛА (КИТАЙ)
+allprojects {
+    repositories {
+        maven { url 'https://maven.aliyun.com/repository/public' }
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
+        google()
+        mavenCentral()
+    }
+}
